@@ -22,13 +22,13 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
     // objects that appear on the game board
     private Player player;
-    private ArrayList<Coin> coins;
+    private ArrayList<Carrot> coins;
 
     public Board() {
         // set the game board size
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
         // set the game board background color
-        setBackground(new Color(232, 232, 232));
+        setBackground(new Color(21,144, 70)); //yeh main background hai
 
         // initialize the game state
         player = new Player();
@@ -49,7 +49,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         player.tick();
 
         // give the player points for collecting coins
-        collectCoins();
+        // collectCoins(); //yeh rabbit ko diyo taki CARROTS DISSAPPEAR!
 
         // calling repaint() will trigger paintComponent() to run again,
         // which will refresh/redraw the graphics.
@@ -67,7 +67,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         // draw our graphics.
         drawBackground(g);
         drawScore(g);
-        for (Coin coin : coins) {
+        for (Carrot coin : coins) {
             coin.draw(g, this);
         }
         player.draw(g, this);
@@ -92,26 +92,26 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         // react to key up events
     }
 
-    private void drawBackground(Graphics g) {
-        // draw a checkered background
-        g.setColor(new Color(214, 214, 214));
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
-                // only color every other tile
-                if ((row + col) % 2 == 1) {
-                    // draw a square tile at the current row/column position
-                    g.fillRect(
-                        col * TILE_SIZE, 
-                        row * TILE_SIZE, 
-                        TILE_SIZE, 
-                        TILE_SIZE
-                    );
-                }
-            }    
+
+
+
+private void drawBackground(Graphics g) {
+    // Draw a checkered background
+    g.setColor(new Color(65, 203, 101));
+    for (int row = 0; row < ROWS; row++) {
+        for (int col = 0; col < COLUMNS; col += 2) { // Increment by 2 for alternate columns
+            // Draw a square tile at the current row/column position
+            g.fillRect(
+                col * TILE_SIZE,
+                row * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE
+            );
         }
     }
+}
 
-    private void drawScore(Graphics g) {
+private void drawScore(Graphics g) {
         // set the text to be displayed
         String text = "$" + player.getScore();
         // we need to cast the Graphics to Graphics2D to draw nicer text
@@ -141,28 +141,24 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
         // draw the string
         g2d.drawString(text, x, y);
-    }
-
-    private ArrayList<Coin> populateCoins() {
-        ArrayList<Coin> coinList = new ArrayList<>();
-        Random rand = new Random();
-
-        // create the given number of coins in random positions on the board.
-        // note that there is not check here to prevent two coins from occupying the same
-        // spot, nor to prevent coins from spawning in the same spot as the player
-        for (int i = 0; i < NUM_COINS; i++) {
-            int coinX = rand.nextInt(COLUMNS);
-            int coinY = rand.nextInt(ROWS);
-            coinList.add(new Coin(coinX, coinY));
         }
 
-        return coinList;
-    }
+        private ArrayList<Carrot> populateCoins() {
+        ArrayList<Carrot> coinList = new ArrayList<>();
 
-    private void collectCoins() {
+        // create coins on every square of the board
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+            coinList.add(new Carrot(col, row));
+            }
+        }
+        return coinList;
+        }
+
+        private void collectCoins() {
         // allow player to pickup coins
-        ArrayList<Coin> collectedCoins = new ArrayList<>();
-        for (Coin coin : coins) {
+        ArrayList<Carrot> collectedCoins = new ArrayList<>();
+        for (Carrot coin : coins) {
             // if the player is on the same tile as a coin, collect it
             if (player.getPos().equals(coin.getPos())) {
                 // give the player some points for picking this up

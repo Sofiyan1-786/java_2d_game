@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
+import java.math.*;
 
 public class Board extends JPanel implements ActionListener, KeyListener {
 
@@ -28,6 +29,11 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     private Player player;
     private Dog dog;
     private ArrayList<Carrot> coins;
+    static Integer myInf = Integer.MAX_VALUE;
+    private static final int NUM_RABBITS = 5;
+    private ArrayList<Rabbit> rabbits;
+    private int rabbitsEliminated = 0;
+    private int rabbitScore = 0;
 
     public Board() {
         // set the game board size
@@ -39,6 +45,12 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         player = new Player();
         dog = new Dog();
         coins = populateCoins();
+
+        //initialize the rabbits
+        rabbits = new ArrayList<>();
+        for (int i = 0; i < NUM_RABBITS; i++) {
+            rabbits.add(new Rabbit());
+        }
 
         // this timer will call the actionPerformed() method every DELAY ms
         timer = new Timer(DELAY, this);
@@ -56,11 +68,27 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         dog.tick();
 
         // give the player points for collecting coins
-        // collectCoins(); //yeh rabbit ko diyo taki CARROTS DISSAPPEAR!
+        collectCoins(); //yeh rabbit ko diyo taki CARROTS DISSAPPEAR!
+        rabbitsCollectCoins();
 
         // calling repaint() will trigger paintComponent() to run again,
         // which will refresh/redraw the graphics.
+        checkDogRabbitCollisions();
         repaint();
+    }
+
+    //This is for collision detections
+    private void checkDogRabbitCollisions() {
+        Point dogPos = dog.getPos();
+        
+        for (Rabbit rabbit : rabbits) {
+            if (rabbit.isAlive() && rabbit.checkCollision(dogPos)) {
+                rabbit.eliminate();
+                rabbitsEliminated++;
+                // Optional: Add sound effect or visual effect here
+                System.out.println("Rabbit eliminated! Total: " + rabbitsEliminated);
+            }
+        }
     }
 
     @Override
@@ -79,6 +107,11 @@ public class Board extends JPanel implements ActionListener, KeyListener {
         }
         player.draw(g, this);
         dog.draw(g, this);
+
+        for (Rabbit rabbit : rabbits) {
+            rabbit.draw(g, this);
+        }
+        drawScore(g);
 
         // rabbit.draw(g, this);//making error here
         // this smooths out animations on some systems
@@ -107,7 +140,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
 
 private void drawBackground(Graphics g) {
     // Draw a checkered background
-    g.setColor(new Color(65, 203, 101));
+    g.setColor(new Color(5, 203, 101));
     for (int row = 0; row < ROWS; row++) {
         for (int col = 0; col < COLUMNS; col += 2) { // Increment by 2 for alternate columns
             // Draw a square tile at the current row/column position
@@ -123,7 +156,8 @@ private void drawBackground(Graphics g) {
 
 private void drawScore(Graphics g) {
         // set the text to be displayed
-        String text = "$" + player.getScore();
+        String text = "CARROTS TAKEN:" + player.getScore();
+        String text1 = "CARROTS TAKEN by Rabbits:" + rabbitScore;
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
@@ -136,14 +170,14 @@ private void drawScore(Graphics g) {
             RenderingHints.KEY_FRACTIONALMETRICS,
             RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         // set the text color and font
-        g2d.setColor(new Color(30, 201, 139));
-        g2d.setFont(new Font("Lato", Font.BOLD, 25));
+        g2d.setColor(new Color(251, 251, 251));
+        g2d.setFont(new Font("Algerian", Font.BOLD, 25));
         // draw the score in the bottom center of the screen
         // https://stackoverflow.com/a/27740330/4655368
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
         // the text will be contained within this rectangle.
         // here I've sized it to be the entire bottom row of board tiles
-        Rectangle rect = new Rectangle(0, TILE_SIZE * (ROWS - 1), TILE_SIZE * COLUMNS, TILE_SIZE);
+        Rectangle rect = new Rectangle(-330, TILE_SIZE * (ROWS - 1), TILE_SIZE * COLUMNS, TILE_SIZE);
         // determine the x coordinate for the text
         int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
         // determine the y coordinate for the text
@@ -151,8 +185,9 @@ private void drawScore(Graphics g) {
         int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
         // draw the string
         g2d.drawString(text, x, y);
+        g2d.drawString(text1, x, y - 45);
         }
-
+        
         private ArrayList<Carrot> populateCoins() {
         ArrayList<Carrot> coinList = new ArrayList<>();
 
@@ -172,12 +207,27 @@ private void drawScore(Graphics g) {
             // if the player is on the same tile as a coin, collect it
             if (player.getPos().equals(coin.getPos())) {
                 // give the player some points for picking this up
-                player.addScore(100);
+                player.addScore(1);
                 collectedCoins.add(coin);
             }
         }
         // remove collected coins from the board
         coins.removeAll(collectedCoins);
-    }
+        }
+        private void rabbitsCollectCoins() {
+            ArrayList<Carrot> collectedCoins = new ArrayList<>();
+            for (Rabbit rabbit : rabbits) {
+                if (rabbit.isAlive()) {
+                    for (Carrot coin : coins) {
+                        if (rabbit.getPos().equals(coin.getPos())) {
+                            collectedCoins.add(coin);
+                            rabbitScore++;  // Add the coin to our collection
+                        }
+                    }
+                }
+            }
+            // Remove all collected coins after the loops
+            coins.removeAll(collectedCoins);
+        }
 
 }

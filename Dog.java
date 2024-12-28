@@ -114,17 +114,17 @@ public class Dog {
         vel.y = 0;
         
         // Update velocity based on key press
-        if (key == KeyEvent.VK_A) {
-            vel.x = -SPEED;
+        if (key == KeyEvent.VK_UP) {
+            pos.translate(0, -1);
         }
-        if (key == KeyEvent.VK_D) {
-            vel.x = SPEED;
+        if (key == KeyEvent.VK_RIGHT) {
+            pos.translate(1, 0);
         }
-        if (key == KeyEvent.VK_W) {
-            vel.y = -SPEED;
+        if (key == KeyEvent.VK_DOWN) {
+            pos.translate(0, 1);
         }
-        if (key == KeyEvent.VK_S) {
-            vel.y = SPEED;
+        if (key == KeyEvent.VK_LEFT) {
+            pos.translate(-1, 0);
         }
     }
     

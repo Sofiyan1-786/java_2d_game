@@ -6,22 +6,27 @@ import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener, KeyListener {
 
-    // controls the delay between each tick in ms
+    //delay ke liye 
     private final int DELAY = 25;
+
     // controls the size of the board
     public static final int TILE_SIZE = 50;
     public static final int ROWS = 12;
     public static final int COLUMNS = 18;
-    // controls how many coins appear on the board
-    public static final int NUM_COINS = 5;
+
+    // // controls how many coins appear on the board
+    // public static final int NUM_COINS = 5;
+
     // suppress serialization warning
     private static final long serialVersionUID = 490905409104883233L;
     
     // keep a reference to the timer object that triggers actionPerformed() in
     // case we need access to it in another method
     private Timer timer;
+
     // objects that appear on the game board
     private Player player;
+    private Dog dog;
     private ArrayList<Carrot> coins;
 
     public Board() {
@@ -32,6 +37,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
 
         // initialize the game state
         player = new Player();
+        dog = new Dog();
         coins = populateCoins();
 
         // this timer will call the actionPerformed() method every DELAY ms
@@ -47,6 +53,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
 
         // prevent the player from disappearing off the board
         player.tick();
+        dog.tick();
 
         // give the player points for collecting coins
         // collectCoins(); //yeh rabbit ko diyo taki CARROTS DISSAPPEAR!
@@ -66,12 +73,14 @@ public class Board extends JPanel implements ActionListener, KeyListener {
 
         // draw our graphics.
         drawBackground(g);
-        drawScore(g);
+        // drawScore(g);
         for (Carrot coin : coins) {
             coin.draw(g, this);
         }
         player.draw(g, this);
+        dog.draw(g, this);
 
+        // rabbit.draw(g, this);//making error here
         // this smooths out animations on some systems
         Toolkit.getDefaultToolkit().sync();
     }
@@ -85,6 +94,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         // react to key down events
         player.keyPressed(e);
+        dog.keyPressed(e);
     }
 
     @Override

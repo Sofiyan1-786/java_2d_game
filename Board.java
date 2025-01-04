@@ -34,7 +34,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     private ArrayList<Rabbit> rabbits;
     private int rabbitsEliminated = 0;
     private int rabbitScore = 0;
-
+    
     public Board() {
         // set the game board size
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));

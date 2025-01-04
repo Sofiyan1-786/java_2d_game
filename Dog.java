@@ -15,7 +15,7 @@ public class Dog {
     private final int TILE_SIZE = Board.TILE_SIZE;  // Use the Board's tile size
     
     // Dog's movement speed
-    private final int SPEED = 4;
+    // private final int SPEED = 4;
     
     // Image for the dog
     private BufferedImage dogImage;
@@ -84,6 +84,10 @@ public class Dog {
         g.dispose();
         return defaultImage;
     }
+
+    public boolean checkCollision(Point otherPos) {
+        return pos.equals(otherPos);
+    }
     
     public void tick() {
         // Update position based on velocity
@@ -103,9 +107,9 @@ public class Dog {
         
         // Draw the dog image
         g.drawImage(dogImage, x, y, TILE_SIZE, TILE_SIZE, observer);
-    }
-    
-    public void keyPressed(KeyEvent e) {
+        }
+        
+        public void keyPressed(KeyEvent e) {
         // WASD controls for the dog
         int key = e.getKeyCode();
         
@@ -114,21 +118,21 @@ public class Dog {
         vel.y = 0;
         
         // Update velocity based on key press
-        if (key == KeyEvent.VK_UP) {
+        if (key == KeyEvent.VK_W) {
             pos.translate(0, -1);
         }
-        if (key == KeyEvent.VK_RIGHT) {
+        if (key == KeyEvent.VK_D) {
             pos.translate(1, 0);
         }
-        if (key == KeyEvent.VK_DOWN) {
+        if (key == KeyEvent.VK_S) {
             pos.translate(0, 1);
         }
-        if (key == KeyEvent.VK_LEFT) {
+        if (key == KeyEvent.VK_A) {
             pos.translate(-1, 0);
         }
-    }
-    
-    public Point getPos() {
+        }
+        
+        public Point getPos() {
         return pos;
     }
 }

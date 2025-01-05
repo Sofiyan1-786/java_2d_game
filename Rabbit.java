@@ -6,15 +6,6 @@ import javax.imageio.ImageIO;
 import java.util.Timer;
 import java.util.TimerTask;
 
-// class AnotherClass {
-//     public void printConfig() {
-//         System.out.println("Rows: " + GameConfig.ROWS);
-//         System.out.println("Columns: " + GameConfig.COLUMNS);
-//         System.out.println("Tile Size: " + GameConfig.TILE_SIZE);
-//     }
-// }
-
-
 public class Rabbit {
     private BufferedImage image;
     private Point pos;

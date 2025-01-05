@@ -4,13 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        // {
-        //     "type": "java",
-        //     "name": "Rabbit",
-        //     "request": "launch",
-        //     "mainClass": "Rabbit",
-        //     "projectName": "java_2d_game_e02638c3"
-        // },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "java_2d_game_c278b27c"
+        },
         {
             "type": "java",
             "name": "Current File",

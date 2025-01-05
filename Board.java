@@ -1,9 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Random;
 import javax.swing.*;
-import java.math.*;
 
 public class Board extends JPanel implements ActionListener, KeyListener  {
 
@@ -27,7 +25,7 @@ public class Board extends JPanel implements ActionListener, KeyListener  {
     private Dog dog;
     private ArrayList<Carrot> coins;
     static Integer myInf = Integer.MAX_VALUE;
-    private static final int NUM_RABBITS = 5;
+    private static final int NUM_RABBITS = GameConfig.numberOfRabbits;
     private ArrayList<Rabbit> rabbits;
     private int rabbitsEliminated = 0;
     private int rabbitScore = 0;
@@ -158,41 +156,74 @@ private void drawBackground(Graphics g) {
 }
 
 private void drawScore(Graphics g) {
-        // set the text to be displayed
-        int ROWS = GameConfig.ROWS;
-        int COLUMNS = GameConfig.COLUMNS;
-        int TILE_SIZE = GameConfig.TILE_SIZE;
-        String text = "CARROTS TAKEN:" + player.getScore();
-        String text1 = "CARROTS TAKEN by Rabbits:" + rabbitScore;
-        // we need to cast the Graphics to Graphics2D to draw nicer text
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(
-            RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.setRenderingHint(
-            RenderingHints.KEY_RENDERING,
-            RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(
-            RenderingHints.KEY_FRACTIONALMETRICS,
-            RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        // set the text color and font
-        g2d.setColor(new Color(251, 251, 251));
-        g2d.setFont(new Font("Algerian", Font.BOLD, 25));
-        // draw the score in the bottom center of the screen
-        // https://stackoverflow.com/a/27740330/4655368
-        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
-        // the text will be contained within this rectangle.
-        // here I've sized it to be the entire bottom row of board tiles
-        Rectangle rect = new Rectangle(-330, TILE_SIZE * (ROWS - 1), TILE_SIZE * COLUMNS, TILE_SIZE);
-        // determine the x coordinate for the text
-        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
-        // determine the y coordinate for the text
-        // (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
-        // draw the string
-        g2d.drawString(text, x, y);
-        g2d.drawString(text1, x, y - 45);
-        }
+    // set the text to be displayed
+    int ROWS = GameConfig.ROWS;
+    int COLUMNS = GameConfig.COLUMNS;
+
+    int TILE_SIZE = GameConfig.TILE_SIZE;
+
+    String text = "CARROTS TAKEN:" + player.getScore();
+    String text1 = "CARROTS TAKEN by Rabbits:" + rabbitScore;
+
+    String text2 = "";
+    if (Integer.parseInt(player.getScore()) > rabbitScore) {
+        text2 = "Player is winning";
+        System.out.println("Player is winning");
+    } else if (Integer.parseInt(player.getScore()) < rabbitScore) {
+        text2 = "Rabbits are winning";
+        System.out.println("Rabbits are winning");
+    } else {
+        text2 = "It's a tie!";
+        System.out.println("It's a tie!");
+    }
+
+    // Cast the Graphics to Graphics2D
+    Graphics2D g2d = (Graphics2D) g;
+    Graphics2D g2d1 = (Graphics2D) g;
+
+    // Rendering hints for smooth text
+    g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+
+    g2d1.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2d1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    g2d1.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+
+    // Set colors and fonts for g2d and g2d1
+
+    g2d.setColor(new Color(195, 14, 89)); // Red color for text1 and text
+    g2d.setFont(new Font("Algerian", Font.BOLD, 25));
+
+    g2d1.setColor(new Color(255, 250, 213)); // Green color for text2
+    g2d1.setFont(new Font("Algerian", Font.ITALIC, 25));
+
+    // Font metrics for alignment
+    FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+    FontMetrics metrics1 = g2d1.getFontMetrics(g2d1.getFont());
+
+    // Bottom-left positioning for text and text1
+    int textX = 10; // A small padding from the left edge
+    int textY = TILE_SIZE * ROWS - 10; // Near the bottom row, with a small margin
+
+    g2d.drawString(text, textX, textY); // Draw "CARROTS TAKEN:"
+    g2d.drawString(text1, textX, textY - 45); // Draw "CARROTS TAKEN by Rabbits:"
+
+    // Calculate the center of the board for text2
+    int centerX = (COLUMNS * TILE_SIZE) / 2;
+    int centerY = (ROWS * TILE_SIZE) / 2;
+
+    // Get the width of the text
+    int textWidth = metrics1.stringWidth(text2);
+
+    // Center align text2
+    int text2X = centerX - (textWidth / 2);
+    int text2Y = centerY + (metrics1.getAscent() / 2);
+
+    // Draw text2 in the center
+    g2d1.drawString(text2, text2X, text2Y);
+}
+
         
         private ArrayList<Carrot> populateCoins() {
         ArrayList<Carrot> coinList = new ArrayList<>();

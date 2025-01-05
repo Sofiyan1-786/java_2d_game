@@ -14,12 +14,10 @@ public class Dog {
     // Size constants
     private final int TILE_SIZE = GameConfig.TILE_SIZE;  // Use the Board's tile size
     
-    // Dog's movement speed
-    // private final int SPEED = 4;
     
     // Image for the dog
     private BufferedImage dogImage;
-    private Color debugColor;  // Color used if image fails to load
+    private Color debugColor;  // Color used if image fails to load instead :|
     
     public Dog() {
         // Start the dog at position (3,3)
@@ -32,9 +30,6 @@ public class Dog {
     
     private void loadDogImage() {
         try {
-            // Try multiple ways to load the image
-            
-            // Method 1: Try loading from project resources
             URL resourceUrl = getClass().getResource("/images/dog.jpg");
             if (resourceUrl != null) {
                 dogImage = ImageIO.read(resourceUrl);
@@ -55,35 +50,9 @@ public class Dog {
         }
         
         // If image loading failed, create a default colored rectangle
-        dogImage = createDefaultDogImage();
         System.out.println("Created default dog image (colored rectangle)");
     }
     
-    private BufferedImage createDefaultDogImage() {
-        // Create a default colored rectangle if no image is available
-        BufferedImage defaultImage = new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = defaultImage.createGraphics();
-        
-        // Draw filled rectangle
-        g.setColor(debugColor);
-        g.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
-        
-        // Draw border
-        g.setColor(Color.BLACK);
-        g.drawRect(0, 0, TILE_SIZE-1, TILE_SIZE-1);
-        
-        // Draw "DOG" text
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 12));
-        FontMetrics fm = g.getFontMetrics();
-        String text = "DOG";
-        int textX = (TILE_SIZE - fm.stringWidth(text)) / 2;
-        int textY = (TILE_SIZE + fm.getAscent()) / 2;
-        g.drawString(text, textX, textY);
-        
-        g.dispose();
-        return defaultImage;
-    }
 
     public boolean checkCollision(Point otherPos) {
         return pos.equals(otherPos);

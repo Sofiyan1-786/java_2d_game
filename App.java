@@ -2,7 +2,6 @@ import java.util.Scanner;
 import javax.swing.*;
 
 class App {
-
     private static void initWindow() {
         try (Scanner sc = new Scanner(System.in)) {
             while (true){
@@ -19,12 +18,7 @@ class App {
                     System.out.println("Minimum number of columns should be 12");
                     continue;
                 }
-                System.out.println("Enter the size of the tile: (50 Recommended) ");
-                GameConfig.TILE_SIZE = sc.nextInt();
-                if (GameConfig.TILE_SIZE < 50 ){
-                    System.out.println("Minimum number of rows should be 50");
-                    continue;
-                }
+                
                 System.out.println("Enter the number of rabbits in the board: (5-10 Recommended) ");
                 GameConfig.numberOfRabbits = sc.nextInt();
                 if (GameConfig.numberOfRabbits < 5){
@@ -36,7 +30,7 @@ class App {
         }
 
         // create a window frame and set the title in the toolbar
-        JFrame window = new JFrame("Pakkodo Pakkodo");
+        JFrame window = new JFrame("avva java project: Pakkodo Pakkodo");
         // when we close the window, stop the app
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -60,10 +54,6 @@ class App {
     }
 
     public static void main(String[] args) {
-        // invokeLater() is used here to prevent our graphics processing from
-        // blocking the GUI. https://stackoverflow.com/a/22534931/4655368
-        // this is a lot of boilerplate code that you shouldn't be too concerned about.
-        // just know that when main runs it will call initWindow() once.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 initWindow();

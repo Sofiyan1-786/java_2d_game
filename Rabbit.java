@@ -64,8 +64,8 @@ public class Rabbit {
     }
     
     public void setRandomPosition() {
-        int maxX = GameConfig.COLUMNS - 1;
-        int maxY = GameConfig.ROWS - 1;
+        int maxX = GameConfig.COLUMNS ;
+        int maxY = GameConfig.ROWS ;
         pos = new Point(
             (int) (Math.random() * maxX),
             (int) (Math.random() * maxY)

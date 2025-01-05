@@ -1,23 +1,23 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener, KeyListener  {
 
-    //delay ke liye 
+    //delay ke liye (For delay)
     private final int DELAY = 25;
-
-    // controls the size of the board
-    
-    // // controls how many coins appear on the board
-    // public static final int NUM_COINS = 5;
 
     // suppress serialization warning
     private static final long serialVersionUID = 490905409104883233L;
     
     // keep a reference to the timer object that triggers actionPerformed() in
-    // case we need access to it in another method
+    // case we need access to it in add method
     private Timer timer;
 
     // objects that appear on the game board
@@ -31,13 +31,10 @@ public class Board extends JPanel implements ActionListener, KeyListener  {
     private int rabbitScore = 0;
     
     public Board() {
-        // set the game board size
-        int ROWS = GameConfig.ROWS;
-        int COLUMNS = GameConfig.COLUMNS;
-        int TILE_SIZE = GameConfig.TILE_SIZE;
-        setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
+
+        setPreferredSize(new Dimension(GameConfig.TILE_SIZE * GameConfig.COLUMNS, GameConfig.TILE_SIZE * GameConfig.ROWS));
         // set the game board background color
-        setBackground(new Color(21,144, 70)); //yeh main background hai
+        setBackground(new Color(21,144, 70)); //main bg
 
         // initialize the game state
         player = new Player();
@@ -57,16 +54,12 @@ public class Board extends JPanel implements ActionListener, KeyListener  {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // this method is called by the timer every DELAY ms.
-        // use this space to update the state of your game or animation
-        // before the graphics are redrawn.
-
         // prevent the player from disappearing off the board
         player.tick();
         dog.tick();
 
         // give the player points for collecting coins
-        collectCoins(); //yeh rabbit ko diyo taki CARROTS DISSAPPEAR!
+        collectCoins(); //player collecting karrots
         rabbitsCollectCoins();
 
         // calling repaint() will trigger paintComponent() to run again,
@@ -75,16 +68,32 @@ public class Board extends JPanel implements ActionListener, KeyListener  {
         repaint();
     }
 
-    //This is for collision detections
     private void checkDogRabbitCollisions() {
         Point dogPos = dog.getPos();
         
+        Point playerPos = player.getPos();
         for (Rabbit rabbit : rabbits) {
             if (rabbit.isAlive() && rabbit.checkCollision(dogPos)) {
+            int distanceX = Math.abs(playerPos.x - rabbit.getPos().x);
+            int distanceY = Math.abs(playerPos.y - rabbit.getPos().y);
+
+            if (distanceX < 5 && distanceY < 5) {
                 rabbit.eliminate();
                 rabbitsEliminated++;
-                // Optional: Add sound effect or visual effect here
+
+                
+                // Among Us sound effect:)
+                try {
+                    File soundFile = new File("music/bgmusic.wav");
+                    AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioIn);
+                    clip.start();
+                } catch (Exception ex) {
+                    System.out.println("Error with playing sound.");
+                }
                 System.out.println("Rabbit eliminated! Total: " + rabbitsEliminated);
+            }
             }
         }
     }
@@ -92,13 +101,10 @@ public class Board extends JPanel implements ActionListener, KeyListener  {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // when calling g.drawImage() we can use "this" for the ImageObserver 
-        // because Component implements the ImageObserver interface, and JPanel 
-        // extends from Component. So "this" Board instance, as a Component, can 
-        // react to imageUpdate() events triggered by g.drawImage()
 
         // draw our graphics.
         drawBackground(g);
+
         // drawScore(g);
         for (Carrot coin : coins) {
             coin.draw(g, this);
@@ -111,8 +117,7 @@ public class Board extends JPanel implements ActionListener, KeyListener  {
         }
         drawScore(g);
 
-        // rabbit.draw(g, this);//making error here
-        // this smooths out animations on some systems
+        // For unix systems this may be needed to ensure the screen is updated
         Toolkit.getDefaultToolkit().sync();
     }
 
@@ -133,23 +138,17 @@ public class Board extends JPanel implements ActionListener, KeyListener  {
         // react to key up events
     }
 
-
-
-
 private void drawBackground(Graphics g) {
     // Draw a checkered background
-    int ROWS = GameConfig.ROWS;
-    int COLUMNS = GameConfig.COLUMNS;
-    int TILE_SIZE = GameConfig.TILE_SIZE;
     g.setColor(new Color(5, 203, 101));
-    for (int row = 0; row < ROWS; row++) {
-        for (int col = 0; col < COLUMNS; col += 2) { // Increment by 2 for alternate columns
+    for (int row = 0; row < GameConfig.ROWS; row++) {
+        for (int col = 0; col < GameConfig.COLUMNS; col += 2) {
             // Draw a square tile at the current row/column position
             g.fillRect(
-                col * TILE_SIZE,
-                row * TILE_SIZE,
-                TILE_SIZE,
-                TILE_SIZE
+                col * GameConfig.TILE_SIZE,
+                row * GameConfig.TILE_SIZE,
+                GameConfig.TILE_SIZE,
+                GameConfig.TILE_SIZE
             );
         }
     }
@@ -162,7 +161,7 @@ private void drawScore(Graphics g) {
 
     int TILE_SIZE = GameConfig.TILE_SIZE;
 
-    String text = "CARROTS TAKEN:" + player.getScore();
+    String text = "CARROTS TAKEN by Player:" + player.getScore();
     String text1 = "CARROTS TAKEN by Rabbits:" + rabbitScore;
 
     String text2 = "";
@@ -176,11 +175,15 @@ private void drawScore(Graphics g) {
         text2 = "It's a tie!";
         System.out.println("It's a tie!");
     }
+    
+    String text3 = "Rabbits Eliminated: " + rabbitsEliminated ;
+    String text4 =  "Rabbits Remaining: " + (NUM_RABBITS - rabbitsEliminated);
 
     // Cast the Graphics to Graphics2D
     Graphics2D g2d = (Graphics2D) g;
     Graphics2D g2d1 = (Graphics2D) g;
-
+    Graphics2D g2d2 = (Graphics2D) g;
+    
     // Rendering hints for smooth text
     g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -190,16 +193,15 @@ private void drawScore(Graphics g) {
     g2d1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     g2d1.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
-    // Set colors and fonts for g2d and g2d1
-
-    g2d.setColor(new Color(195, 14, 89)); // Red color for text1 and text
-    g2d.setFont(new Font("Algerian", Font.BOLD, 25));
+    g2d2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2d2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    g2d2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    
 
     g2d1.setColor(new Color(255, 250, 213)); // Green color for text2
     g2d1.setFont(new Font("Algerian", Font.ITALIC, 25));
 
     // Font metrics for alignment
-    FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
     FontMetrics metrics1 = g2d1.getFontMetrics(g2d1.getFont());
 
     // Bottom-left positioning for text and text1
@@ -208,6 +210,8 @@ private void drawScore(Graphics g) {
 
     g2d.drawString(text, textX, textY); // Draw "CARROTS TAKEN:"
     g2d.drawString(text1, textX, textY - 45); // Draw "CARROTS TAKEN by Rabbits:"
+    g2d.drawString(text3, textX, textY -135);
+    g2d.drawString(text4, textX, textY -90);
 
     // Calculate the center of the board for text2
     int centerX = (COLUMNS * TILE_SIZE) / 2;
@@ -229,11 +233,8 @@ private void drawScore(Graphics g) {
         ArrayList<Carrot> coinList = new ArrayList<>();
 
         // create coins on every square of the board
-        int ROWS = GameConfig.ROWS;
-        int COLUMNS = GameConfig.COLUMNS;
-        int TILE_SIZE = GameConfig.TILE_SIZE;
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
+        for (int row = 0; row < GameConfig.ROWS; row++) {
+            for (int col = 0; col < GameConfig.COLUMNS; col++) {
             coinList.add(new Carrot(col, row));
             }
         }
@@ -241,7 +242,7 @@ private void drawScore(Graphics g) {
         }
 
         private void collectCoins() {
-        // allow player to pickup coins
+        // allow player to pickup coins aka carrots
         ArrayList<Carrot> collectedCoins = new ArrayList<>();
         for (Carrot coin : coins) {
             // if the player is on the same tile as a coin, collect it

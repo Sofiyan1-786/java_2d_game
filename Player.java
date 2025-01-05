@@ -42,8 +42,8 @@ public class Player {
         // position by multiplying by the tile size.
         g.drawImage(
             image, 
-            pos.x * Board.TILE_SIZE, 
-            pos.y * Board.TILE_SIZE, 
+            pos.x * GameConfig.TILE_SIZE, 
+            pos.y * GameConfig.TILE_SIZE, 
             observer
         );
     }
@@ -76,14 +76,14 @@ public class Player {
         // prevent the player from moving off the edge of the board sideways
         if (pos.x < 0) {
             pos.x = 0;
-        } else if (pos.x >= Board.COLUMNS) {
-            pos.x = Board.COLUMNS - 1;
+        } else if (pos.x >= GameConfig.COLUMNS) {
+            pos.x = GameConfig.COLUMNS - 1;
         }
         // prevent the player from moving off the edge of the board vertically
         if (pos.y < 0) {
             pos.y = 0;
-        } else if (pos.y >= Board.ROWS) {
-            pos.y = Board.ROWS - 1;
+        } else if (pos.y >= GameConfig.ROWS) {
+            pos.y = GameConfig.ROWS - 1;
         }
     }
 

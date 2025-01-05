@@ -12,7 +12,7 @@ public class Dog {
     private Point vel;
     
     // Size constants
-    private final int TILE_SIZE = Board.TILE_SIZE;  // Use the Board's tile size
+    private final int TILE_SIZE = GameConfig.TILE_SIZE;  // Use the Board's tile size
     
     // Dog's movement speed
     // private final int SPEED = 4;
@@ -95,9 +95,9 @@ public class Dog {
         
         // Keep the dog on the board
         if (pos.x < 0) pos.x = 0;
-        if (pos.x >= Board.COLUMNS) pos.x = Board.COLUMNS - 1;
+        if (pos.x >= GameConfig.COLUMNS) pos.x = GameConfig.COLUMNS - 1;
         if (pos.y < 0) pos.y = 0;
-        if (pos.y >= Board.ROWS) pos.y = Board.ROWS - 1;
+        if (pos.y >= GameConfig.ROWS) pos.y = GameConfig.ROWS - 1;
     }
     
     public void draw(Graphics g, Component observer) {

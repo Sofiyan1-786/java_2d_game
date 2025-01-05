@@ -6,11 +6,20 @@ import javax.imageio.ImageIO;
 import java.util.Timer;
 import java.util.TimerTask;
 
+// class AnotherClass {
+//     public void printConfig() {
+//         System.out.println("Rows: " + GameConfig.ROWS);
+//         System.out.println("Columns: " + GameConfig.COLUMNS);
+//         System.out.println("Tile Size: " + GameConfig.TILE_SIZE);
+//     }
+// }
+
+
 public class Rabbit {
     private BufferedImage image;
     private Point pos;
     private boolean isAlive;
-    private final int TILE_SIZE = Board.TILE_SIZE;
+    private final int TILE_SIZE = GameConfig.TILE_SIZE;
     private Timer timer;
     private int score;
     
@@ -64,8 +73,8 @@ public class Rabbit {
     }
     
     public void setRandomPosition() {
-        int maxX = Board.COLUMNS - 1;
-        int maxY = Board.ROWS - 1;
+        int maxX = GameConfig.COLUMNS - 1;
+        int maxY = GameConfig.ROWS - 1;
         pos = new Point(
             (int) (Math.random() * maxX),
             (int) (Math.random() * maxY)

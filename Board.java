@@ -5,16 +5,13 @@ import java.util.Random;
 import javax.swing.*;
 import java.math.*;
 
-public class Board extends JPanel implements ActionListener, KeyListener {
+public class Board extends JPanel implements ActionListener, KeyListener  {
 
     //delay ke liye 
     private final int DELAY = 25;
 
     // controls the size of the board
-    public static final int TILE_SIZE = 50;
-    public static final int ROWS = 12;
-    public static final int COLUMNS = 18;
-
+    
     // // controls how many coins appear on the board
     // public static final int NUM_COINS = 5;
 
@@ -37,6 +34,9 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     
     public Board() {
         // set the game board size
+        int ROWS = GameConfig.ROWS;
+        int COLUMNS = GameConfig.COLUMNS;
+        int TILE_SIZE = GameConfig.TILE_SIZE;
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
         // set the game board background color
         setBackground(new Color(21,144, 70)); //yeh main background hai
@@ -140,6 +140,9 @@ public class Board extends JPanel implements ActionListener, KeyListener {
 
 private void drawBackground(Graphics g) {
     // Draw a checkered background
+    int ROWS = GameConfig.ROWS;
+    int COLUMNS = GameConfig.COLUMNS;
+    int TILE_SIZE = GameConfig.TILE_SIZE;
     g.setColor(new Color(5, 203, 101));
     for (int row = 0; row < ROWS; row++) {
         for (int col = 0; col < COLUMNS; col += 2) { // Increment by 2 for alternate columns
@@ -156,6 +159,9 @@ private void drawBackground(Graphics g) {
 
 private void drawScore(Graphics g) {
         // set the text to be displayed
+        int ROWS = GameConfig.ROWS;
+        int COLUMNS = GameConfig.COLUMNS;
+        int TILE_SIZE = GameConfig.TILE_SIZE;
         String text = "CARROTS TAKEN:" + player.getScore();
         String text1 = "CARROTS TAKEN by Rabbits:" + rabbitScore;
         // we need to cast the Graphics to Graphics2D to draw nicer text
@@ -192,6 +198,9 @@ private void drawScore(Graphics g) {
         ArrayList<Carrot> coinList = new ArrayList<>();
 
         // create coins on every square of the board
+        int ROWS = GameConfig.ROWS;
+        int COLUMNS = GameConfig.COLUMNS;
+        int TILE_SIZE = GameConfig.TILE_SIZE;
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
             coinList.add(new Carrot(col, row));

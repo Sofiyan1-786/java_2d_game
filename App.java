@@ -1,8 +1,17 @@
+import java.util.Scanner;
+
 import javax.swing.*;
 
 class App {
 
     private static void initWindow() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the number of rows: (12 Recommended) ");
+        GameConfig.ROWS = sc.nextInt();
+        System.out.println("Enter the number of columns: (18 Recommended) ");
+        GameConfig.COLUMNS = sc.nextInt();
+        System.out.println("Enter the size of the tile: (50 Recommended) ");
+        GameConfig.TILE_SIZE = sc.nextInt();
         // create a window frame and set the title in the toolbar
         JFrame window = new JFrame("Pakkodo Pakkodo");
         // when we close the window, stop the app
